@@ -1,5 +1,7 @@
 package com.rentaride.registration.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,15 +30,23 @@ public class RegistrationController {
 	
 	@GetMapping("/health-check")
 	public ResponseEntity<String> healthCheck() {
+		//log.info(user.getEmail() + " : " + user.getPassword());
 		return new ResponseEntity<>("Registration Ok", HttpStatus.OK);
 	}
 	
 	@PostMapping("/register-user")
 	public ResponseEntity<String> registerUser(@RequestBody Register user) {
 		log.info(user.getEmail() + " : " + user.getPassword());
-		authClient.registerUser(user.getEmail(), user.getPassword());
+		authClient.addUser(user.getEmail(), user.getPassword());
 		
 		registrationService.registerUser(user);
 		return new ResponseEntity<String>("Inserted", HttpStatus.CREATED);
+	}
+	
+	@GetMapping("/users")
+	public ResponseEntity<List<Register>> getAllRegistrations() {
+		ResponseEntity<List<Register>> entity = null;
+		entity = new ResponseEntity<>(registrationService.getAllRegistrations(), HttpStatus.OK);
+		return entity;
 	}
 }
